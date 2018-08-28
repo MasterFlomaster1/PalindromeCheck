@@ -118,8 +118,8 @@ public class Palindrome {
         ArrayList<String> wordsArrayList = new ArrayList<>();
 
 
-        for (int m = 0; m < inputWordsArrayList.size(); m++){
-            StringBuilder wordStringBuilder = new StringBuilder(inputWordsArrayList.get(m).toLowerCase());
+        for (String m : inputWordsArrayList){
+            StringBuilder wordStringBuilder = new StringBuilder(m.toLowerCase());
             int wordLength = wordStringBuilder.length();
             String wordString = "-";
             int count = 0;
