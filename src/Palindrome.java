@@ -1,176 +1,102 @@
-import java.io.*;
 import java.text.BreakIterator;
 import java.util.*;
 
-
+/**
+ * This class checks if there is any palindromes or palindromic sentences in your text.
+ *
+ * @author MasterFlomaster1
+ * @version 2.0
+ */
 public class Palindrome {
 
-    public static void main(String[] args)throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        System.out.print("Enter your text here: ");
-        String inputText = reader.readLine();
+    private ArrayList<String> inputSentencesList = new ArrayList<>();
+    private ArrayList<String> sentenceList = new ArrayList<>();
+    private ArrayList<String> outputSentencesList = new ArrayList<>();
+    private ArrayList<String> inputWordsList = new ArrayList<>();
+    private ArrayList<String> outputWordsList = new ArrayList<>();
+    private boolean sentence;
+    private String text;
 
+    public ArrayList<String> getOutputWordsList() {
+        return outputWordsList;
+    }
 
-        System.out.println("#####Palindromic sentences found in the text: " + sentenceCheck(inputText).size()+ "#####");
-        for (Object m: sentenceCheck(inputText)){
-            System.out.println(m);
-        }
+    public ArrayList<String> getOutputSentencesList() {
+        return outputSentencesList;
+    }
 
-        System.out.println("#####Palindromes found in the text: " + wordCheck(inputText).size()+ "#####");
-        for (Object m: wordCheck(inputText)){
-            System.out.println(m);
-        }
+    /**
+     * Main class constructor.
+     *
+     * @param text here goes your text.
+     * @param checkForSentences if true, the I will look for palindromic sentences in your text.
+     */
+    public Palindrome(String text, boolean checkForSentences) {
+        this.text = text;
+        sentence = checkForSentences;
+        if (sentence) sentenceSeparation();
+        wordSeparation();
     }
 
 
-    public static ArrayList<String> sentenceCheck(String inputText){
-        ArrayList<String> inputSentencesArrayList = new ArrayList<>();
-        ArrayList<String> sentenceArrayList = new ArrayList<>();
-        ArrayList<String> outputSentencesArrayList = new ArrayList<>();
-
-
+    /**
+     * This method fills the <code>{@link #inputSentencesList}</code>.
+     */
+    private void sentenceSeparation() {
         BreakIterator iterator = BreakIterator.getSentenceInstance(Locale.US);
-        iterator.setText(inputText);
+        iterator.setText(text);
         int start = iterator.first();
         for (int end = iterator.next(); end != BreakIterator.DONE; start = end, end = iterator.next()) {
-            inputSentencesArrayList.add(inputText.substring(start,end));
+            inputSentencesList.add(text.substring(start,end));
         }
-
-
-        for (int i = 0; i < inputSentencesArrayList.size(); i++){
-            StringBuilder sentenceStringBuilder = new StringBuilder(inputSentencesArrayList.get(i).toLowerCase());
-            String sentenceString = "-";
-            int sentenceLength = sentenceStringBuilder.length();
-            sentenceArrayList.add(inputSentencesArrayList.get(i));
-            int count = 0;
-
-            for (int q = 0; q < sentenceLength; q++){
-                count++;
-                if (sentenceStringBuilder.charAt(q) == ',' || sentenceStringBuilder.charAt(q) == ' '
-                        || sentenceStringBuilder.charAt(q) == '-' || sentenceStringBuilder.charAt(q) == '\''
-                        || sentenceStringBuilder.charAt(q) == '.' || sentenceStringBuilder.charAt(q) == '!'
-                        || sentenceStringBuilder.charAt(q) == '?' || sentenceStringBuilder.charAt(q) == ';'
-                        || sentenceStringBuilder.charAt(q) == ':'){
-                    sentenceStringBuilder.deleteCharAt(q);
-                    sentenceLength--;
-                    q--;
-                    count--;
-                    sentenceString = sentenceStringBuilder.toString();
-
-                    if (count == sentenceLength){
-                        sentenceArrayList.remove(i);
-                    }
-                }
-            }
-
-            if (!sentenceString.equals("-")){
-                sentenceArrayList.add(sentenceString);
-            }
-        }
-
-        for (int i = 0; i < sentenceArrayList.size(); i++){
-            StringBuilder sentenceForCheck = new StringBuilder(sentenceArrayList.get(i));
-            String sentence;
-
-            if (inputSentencesArrayList.size() > i){
-                sentence = inputSentencesArrayList.get(i);
-            } else {
-                break;
-            }
-
-            int count = 0;
-
-            for (int q = 0; q < sentenceForCheck.length(); q++){
-
-                if (sentenceForCheck.length() == 1){
-                    break;
-                }
-
-                if (sentenceForCheck.length() == sentence.length()){
-                    break;
-                }
-
-
-                if (sentenceForCheck.charAt(q) == sentenceForCheck.charAt(sentenceForCheck.length() - 1 - q)){
-                    count++;
-                } else {
-                    sentence = " ";
-                    break;
-                }
-
-            }
-
-            if (count == sentenceForCheck.length()){
-                if (!sentence.equals(" ")) {
-                    outputSentencesArrayList.add(sentence);
-                }
-            }
-        }
-        return outputSentencesArrayList;
+        sentenceAdaptation();
     }
 
 
-    public static ArrayList<String> wordCheck(String inputText){
-        String[] subStr = inputText.split(":|;|\\?|”|“|!|\"|\\.|,| +");
-        ArrayList<String> inputWordsArrayList = new ArrayList<>(Arrays.asList(subStr));
-        inputWordsArrayList.removeAll(Arrays.asList("", null));
-        ArrayList<String> outputWordsArrayList = new ArrayList<>();
-        ArrayList<String> wordsArrayList = new ArrayList<>();
-
-
-        for (String m : inputWordsArrayList){
-            StringBuilder wordStringBuilder = new StringBuilder(m.toLowerCase());
-            int wordLength = wordStringBuilder.length();
-            String wordString = "-";
-            int count = 0;
-            for (int i = 0; i < wordLength; i++){
-                count++;
-                if (wordStringBuilder.charAt(i) == '\''){
-                    wordStringBuilder.deleteCharAt(i);
-                    wordLength--;
-                    i--;
-                    count--;
-                    wordString = wordStringBuilder.toString();
-                    if (count == wordLength-1){
-                        wordString = "-";
-                    }
-                }
-            }
-            wordsArrayList.add(wordStringBuilder.toString());
-
-            if (!wordString.equals("-")){
-                wordsArrayList.add(wordString);
-            }
-        }
-
-
-        for (int i = 0; i < wordsArrayList.size(); i++) {
-            String wordForCheck = wordsArrayList.get(i);
-            String word = inputWordsArrayList.get(i);
-            int count = 0;
-
-            for (int q = 0; q < wordForCheck.length(); q++) {
-
-                if (wordForCheck.length() == 1) {
-                    break;
-                }
-
-
-                if (wordForCheck.charAt(q) == wordForCheck.charAt(wordForCheck.length() - 1 - q)) {
-                    count++;
-                } else {
-                    word = " ";
-                    break;
-                }
-            }
-            if (count == wordForCheck.length()) {
-                if (!word.equals(" ")) {
-                    outputWordsArrayList.add(word);
-                }
-            }
-        }
-        return outputWordsArrayList;
+    /**
+     * This method fills the <code>{@link #inputWordsList}</code> and deletes extra characters.
+     */
+    private void wordSeparation() {
+        String[] subStr = text.split(":|;|\\?|”|“|\\(|\\)|!|\"|\\.|,| +");
+        inputWordsList = new ArrayList<>(Arrays.asList(subStr));
+        inputWordsList.removeAll(Arrays.asList("", null));
+        checkPalindrome(inputWordsList);
     }
 
+
+    /**
+     * This method fills the <code>{@link #sentenceList}</code> and deletes extra characters.
+     */
+    private void sentenceAdaptation() {
+        for (String s : inputSentencesList) {
+            String removeChar = s.toLowerCase().replaceAll("[,-.\'!?();: +]", "");
+            sentenceList.add(removeChar);
+        }
+        checkPalindrome(sentenceList);
+    }
+
+
+    /**
+     * Primary method which receives ArrayList to check for palindromes and palindromic sentences.
+     * @param list ArrayList to check.
+     */
+    private void checkPalindrome(ArrayList<String> list) {
+        for (int i = 0; i < list.size(); i++) {
+            boolean isPalindrome = true;
+            String word = list.get(i);
+            if (word.length()==1) continue;
+            for (int q = 0; q < word.length(); q++) {
+                if (word.charAt(q)!=word.charAt(word.length()-q-1)) {
+                    isPalindrome = false;
+                }
+            }
+
+            if (isPalindrome) {
+                if (sentence) outputSentencesList.add(inputSentencesList.get(i));
+                else outputWordsList.add(inputWordsList.get(i));
+            }
+
+        }
+    }
 }
 
