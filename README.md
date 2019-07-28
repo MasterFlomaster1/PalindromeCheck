@@ -1,11 +1,11 @@
 # About
-Simple tool to check text for palindromes written in Java.
+Simple tool to find palindromes in text.
 
 # Features
 
-* Find palindromic words
-* Find palindromic numbers
-* Find palindromic sentences (only English language is currently supported)
+* Find palindromic words.
+* Find palindromic numbers.
+* Find palindromic sentences (only English language is currently supported).
 
 # Requirements
 
